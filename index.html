@@ -122,6 +122,22 @@
   }
   .reset-btn:hover{background:var(--maple);color:var(--panel)}
 
+  .controls-hint{
+    font-size:12px;color:var(--ink-2);line-height:1.5;flex:1;min-width:260px;
+  }
+  .controls-hint strong{color:var(--ink)}
+
+  .chart-filter-row{
+    display:flex;align-items:center;gap:10px;
+    margin:10px 0 14px;padding:8px 12px;
+    background:var(--panel-warm);border:1px solid var(--line-soft);
+  }
+  .cf-label{
+    font-family:'IBM Plex Mono',monospace;font-size:10px;
+    letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);
+    font-weight:600;
+  }
+
   .scope-note{
     background:#e6f0f9;border:1px solid #b8d4f0;border-left:3px solid var(--navy);
     padding:9px 14px;margin-bottom:18px;font-size:11.5px;line-height:1.5;color:#0b2545;
@@ -345,12 +361,48 @@
 
   /* ─── Footer ─── */
   footer{
-    margin-top:28px;padding-top:16px;border-top:3px double var(--ink);
-    font-size:10.5px;color:var(--muted);
-    display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;
+    margin-top:28px;padding-top:18px;border-top:3px double var(--ink);
+    display:grid;grid-template-columns:1fr auto;gap:30px;align-items:start;
   }
-  footer .sources{max-width:70ch;line-height:1.6}
-  footer .sources strong{color:var(--ink)}
+  .sources{max-width:none;min-width:0}
+  .sources-heading{
+    font-family:'IBM Plex Mono',monospace;font-size:10px;
+    letter-spacing:0.18em;text-transform:uppercase;color:var(--muted);
+    font-weight:600;margin-bottom:8px;
+    padding-bottom:5px;border-bottom:1px solid var(--line-soft);
+  }
+  .sources-list{
+    list-style:none;padding:0;margin:0;
+    display:grid;grid-template-columns:repeat(auto-fit, minmax(280px, 1fr));
+    gap:0;
+  }
+  .sources-list li{
+    border-left:2px solid var(--line);padding:0;margin:0;
+    transition:border-color 0.15s;
+  }
+  .sources-list li:hover{border-left-color:var(--maple)}
+  .sources-list a{
+    display:block;padding:7px 12px;text-decoration:none;
+    color:var(--ink-2);transition:all 0.15s;
+  }
+  .sources-list a:hover{
+    background:var(--panel-warm);color:var(--maple-deep);
+  }
+  .src-title{
+    display:block;font-size:11.5px;font-weight:600;color:var(--ink);
+    line-height:1.35;margin-bottom:2px;
+  }
+  .sources-list a:hover .src-title{color:var(--maple-deep)}
+  .src-meta{
+    display:block;font-family:'IBM Plex Mono',monospace;
+    font-size:9.5px;letter-spacing:0.04em;color:var(--muted);
+    line-height:1.4;
+  }
+  .course-tag{
+    text-align:right;font-size:10.5px;color:var(--muted);
+    padding-left:16px;border-left:1px solid var(--line-soft);
+    line-height:1.6;
+  }
 
   @media(max-width:1000px){
     body{padding:16px 14px}
@@ -542,24 +594,18 @@
   </div>
   <div class="title-wrap">
     <h1>Canada's Trade With the U.S. — <em>Where the Tariffs Bit</em></h1>
-    <div class="sub">Country Analysis Dashboard · by Rachna Agrawal · IMS 6304 / MIS 6313 · <strong>Data through Feb 2026</strong></div>
+    <div class="sub">Country Analysis Dashboard · IMS 6304 / MIS 6313 · <strong>Data through Feb 2026</strong></div>
   </div>
 </header>
 
 <div class="controls">
-  <span class="control-label">Monthly trend period</span>
-  <div class="chip-row" id="yearFilter">
-    <div class="chip active" data-year="all">All (2024–2026)</div>
-    <div class="chip" data-year="2024">2024 only</div>
-    <div class="chip" data-year="2025">2025 only</div>
-    <div class="chip" data-year="2026">2026 YTD</div>
-  </div>
+  <span class="control-label">Dashboard filters</span>
+  <span class="controls-hint">💡 <strong>Year filter</strong> lives inside Chart 01 (affects trend only). <strong>Click a province</strong> on the map to filter the bottom-right charts.</span>
   <button class="reset-btn" onclick="resetAll()">↻ Reset Filters</button>
 </div>
 
 <div class="scope-note">
-  <strong>💡 Master-Detail Interactive Filtering:</strong>
-  The National Trend (Chart 01) remains a fixed baseline. <strong>Click a province on the map (Chart 02)</strong> to dynamically filter the regional charts on the right side of the screen, revealing that specific region's underlying sector exposure and risk profile.
+  <strong>📊 Time scope:</strong> Chart 01 shows <strong>Jan 2024 → Feb 2026</strong> monthly (filterable by year). Provincial data (Map, Rank) is a <strong>2024 annual snapshot</strong>. Sector charts (Treemap, Top Movers) show <strong>Jan-Feb 2025 vs Jan-Feb 2026 YoY</strong>. Each dataset's time window is the most recent available from Statistics Canada.
 </div>
 
 <div class="kpi-strip">
@@ -621,6 +667,15 @@
       <div class="eyebrow">Chart 01 · Persistent National Baseline</div>
       <h3>Total Monthly Goods Exports to the United States</h3>
       <div class="annotate">27 consecutive monthly observations. Shaded red zone marks active U.S. tariffs. Hover any point for detail. <strong>Click the ✦ tabs above for AI-derived insights.</strong></div>
+      <div class="chart-filter-row">
+        <span class="cf-label">Filter period:</span>
+        <div class="chip-row" id="yearFilter">
+          <div class="chip active" data-year="all">All (2024–2026)</div>
+          <div class="chip" data-year="2024">2024 only</div>
+          <div class="chip" data-year="2025">2025 only</div>
+          <div class="chip" data-year="2026">2026 YTD</div>
+        </div>
+      </div>
       <div class="chart-box chart-hero"><canvas id="nationalTimeChart"></canvas></div>
       <div class="hero-stats">
         <div class="hero-stat neg">
@@ -843,13 +898,35 @@
 
 <footer>
   <div class="sources">
-    <strong>Data sources:</strong>
-    Statistics Canada, <em>Canadian International Merchandise Trade</em> monthly releases (Table 12-10-0011-01).
-    Trade Data Online (<em>ised-isde.canada.ca</em>) — industry YoY.
-    Statistics Canada, <em>Trade in Goods by Exporter Characteristics, 2024</em> — provincial data.
-    Global Affairs Canada, <em>2024 Annual Trade Update</em> — Mexico comparison.
+    <div class="sources-heading">Data sources</div>
+    <ul class="sources-list">
+      <li>
+        <a href="https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1210001101" target="_blank" rel="noopener">
+          <span class="src-title">Statistics Canada — Canadian International Merchandise Trade</span>
+          <span class="src-meta">Table 12-10-0011-01 · Monthly national trend data</span>
+        </a>
+      </li>
+      <li>
+        <a href="https://ised-isde.canada.ca/site/trade-data-online/en" target="_blank" rel="noopener">
+          <span class="src-title">Trade Data Online</span>
+          <span class="src-meta">ised-isde.canada.ca · Industry YoY by NAICS code</span>
+        </a>
+      </li>
+      <li>
+        <a href="https://www150.statcan.gc.ca/n1/daily-quotidien/250516/dq250516b-eng.htm" target="_blank" rel="noopener">
+          <span class="src-title">Statistics Canada — Trade in Goods by Exporter Characteristics, 2024</span>
+          <span class="src-meta">Released May 16, 2025 · Provincial export data</span>
+        </a>
+      </li>
+      <li>
+        <a href="https://international.canada.ca/en/global-affairs/corporate/reports/chief-economist/annual/2024" target="_blank" rel="noopener">
+          <span class="src-title">Global Affairs Canada — 2024 Annual Trade Update</span>
+          <span class="src-meta">Office of the Chief Economist · Canada-Mexico comparison</span>
+        </a>
+      </li>
+    </ul>
   </div>
-  <div style="text-align:right">
+  <div class="course-tag">
     <div><strong style="color:var(--ink)">IMS 6304 / MIS 6313</strong></div>
     <div>Country Analysis · Canada</div>
   </div>
